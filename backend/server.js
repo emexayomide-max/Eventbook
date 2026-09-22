@@ -1,10 +1,14 @@
 const express = require("express");
 const pool = require("./db");
+const cors = require("cors");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const authenticateToken = require("./middleware/auth");
 
+
 const app = express();
+app.use(cors());
+
 
 app.use(express.json());
 
@@ -305,6 +309,54 @@ app.get("/api/profile", authenticateToken, async (req, res) => {
     res.status(500).json({
       status: "error",
       message: "Failed to fetch profile"
+    });
+  }
+});
+
+app.put("/api/profile", authenticateToken, async (req, res) => {
+  const { name, email } = req.body;
+
+  if (!name || !email) {
+    return res.status(400).json({
+      status: "error",
+      message: "Name and email are required"
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      `UPDATE users
+       SET name = $1, email = $2
+       WHERE id = $3
+       RETURNING id, name, email, created_at`,
+      [name, email, req.user.id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found"
+      });
+    }
+
+    res.json({
+      status: "success",
+      message: "Profile updated successfully",
+      user: result.rows[0]
+    });
+  } catch (error) {
+    console.error("Error updating profile:", error.message);
+
+    if (error.code === "23505") {
+      return res.status(409).json({
+        status: "error",
+        message: "Email address is already in use"
+      });
+    }
+
+    res.status(500).json({
+      status: "error",
+      message: "Failed to update profile"
     });
   }
 });
