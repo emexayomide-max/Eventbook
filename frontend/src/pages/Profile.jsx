@@ -14,7 +14,7 @@ function Profile() {
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    fetch("http://localhost:3001/api/profile", {
+    fetch("/api/profile", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -57,7 +57,7 @@ function Profile() {
 
     try {
       const response = await fetch(
-        "http://localhost:3001/api/profile",
+        "/api/profile",
         {
           method: "PUT",
           headers: {

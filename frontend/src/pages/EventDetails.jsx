@@ -10,7 +10,7 @@ function EventDetails() {
   const [isBooking, setIsBooking] = useState(false);
 
   useEffect(() => {
-    fetch(`http://localhost:3001/api/events/${id}`)
+    fetch(`/api/events/${id}`)
       .then(async (response) => {
         const data = await response.json();
 
@@ -44,7 +44,7 @@ function EventDetails() {
 
     try {
       const response = await fetch(
-        "http://localhost:3001/api/bookings",
+        "/api/bookings",
         {
           method: "POST",
           headers: {

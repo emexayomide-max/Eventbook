@@ -10,6 +10,7 @@ import Profile from "./pages/Profile";
 import EventDetails from "./pages/EventDetails";
 import Bookings from "./pages/Bookings";
 import ProtectedRoute from "./components/ProtectedRoute";
+import MyEvents from "./pages/MyEvents";
 
 function App() {
 
@@ -49,12 +50,13 @@ const handleLogout = () => {
   <Link to="/events">Events</Link>
 
   {isLoggedIn ? (
-    <>
-      <Link to="/profile">Profile</Link>
-      <Link to="/bookings">My Bookings</Link>
-      <button onClick={handleLogout}>Logout</button>
-    </>
-  ) : (
+  <>
+    <Link to="/profile">Profile</Link>
+    <Link to="/bookings">My Bookings</Link>
+    <Link to="/my-events">My Events</Link>
+    <button onClick={handleLogout}>Logout</button>
+  </>
+): (
     <>
       <Link to="/login">Login</Link>
       <Link to="/register">Register</Link>
@@ -85,9 +87,18 @@ const handleLogout = () => {
     </ProtectedRoute>
   }
 />
+<Route
+  path="/my-events"
+  element={
+    <ProtectedRoute>
+      <MyEvents />
+    </ProtectedRoute>
+  }
+/>
         </Routes>
       </div>
     </BrowserRouter>
+
   );
 }
 

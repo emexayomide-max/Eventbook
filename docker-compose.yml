@@ -2,14 +2,53 @@ services:
   postgres:
     image: postgres:16
     container_name: eventbook-postgres
+
     environment:
-      POSTGRES_DB: eventbook
-      POSTGRES_USER: eventbook_user
-      POSTGRES_PASSWORD: change_me
-    ports:
-      - "5432:5432"
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+    
+
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+
+    container_name: eventbook-backend
+
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      PORT: 3001
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+
+    container_name: eventbook-frontend
+
+    ports:
+      - "8080:80"
+
+    depends_on:
+      - backend
 
 volumes:
   postgres_data:

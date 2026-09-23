@@ -6,7 +6,7 @@ function Bookings() {
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    fetch("http://localhost:3001/api/bookings", {
+    fetch("/api/bookings", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -42,7 +42,7 @@ function Bookings() {
 
     try {
       const response = await fetch(
-        `http://localhost:3001/api/bookings/${bookingId}`,
+        `/api/bookings/${bookingId}`,
         {
           method: "DELETE",
           headers: {

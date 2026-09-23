@@ -39,7 +39,7 @@ app.get("/api/db-test", async (req, res) => {
   }
 });
 
-app.post("/api/events", async (req, res) => {
+app.post("/api/events", authenticateToken, async (req, res) => {
   const {
     title,
     description,
@@ -51,10 +51,17 @@ app.post("/api/events", async (req, res) => {
   try {
     const result = await pool.query(
       `INSERT INTO events
-        (title, description, location, event_date, capacity)
-       VALUES ($1, $2, $3, $4, $5)
+        (title, description, location, event_date, capacity, created_by)
+       VALUES ($1, $2, $3, $4, $5, $6)
        RETURNING *`,
-      [title, description, location, event_date, capacity]
+      [
+        title,
+        description,
+        location,
+        event_date,
+        capacity,
+        req.user.id
+      ]
     );
 
     res.status(201).json(result.rows[0]);
@@ -81,6 +88,62 @@ app.get("/api/events", async (req, res) => {
     res.status(500).json({
       status: "error",
       message: "Failed to fetch events"
+    });
+  }
+});
+
+app.get("/api/my-events", authenticateToken, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT * FROM events
+       WHERE created_by = $1
+       ORDER BY event_date ASC`,
+      [req.user.id]
+    );
+
+    res.json({
+      status: "success",
+      events: result.rows
+    });
+  } catch (error) {
+    console.error("Error fetching my events:", error.message);
+
+    res.status(500).json({
+      status: "error",
+      message: "Failed to fetch your events"
+    });
+  }
+});
+
+app.delete("/api/my-events/:id", authenticateToken, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await pool.query(
+      `DELETE FROM events
+       WHERE id = $1 AND created_by = $2
+       RETURNING *`,
+      [id, req.user.id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        status: "error",
+        message: "Event not found or you are not the owner"
+      });
+    }
+
+    res.json({
+      status: "success",
+      message: "Event deleted successfully",
+      event: result.rows[0]
+    });
+  } catch (error) {
+    console.error("Error deleting event:", error.message);
+
+    res.status(500).json({
+      status: "error",
+      message: "Failed to delete event"
     });
   }
 });
@@ -522,6 +585,14 @@ app.use((req, res) => {
 });
 
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`EventBook backend running on port ${PORT}`);
+});
+
+server.on("close", () => {
+  console.log("SERVER CLOSED");
+});
+
+server.on("error", (error) => {
+  console.error("SERVER ERROR:", error);
 });
