@@ -3,11 +3,19 @@ kind: Ingress
 metadata:
   name: eventbook-ingress
   namespace: eventbook
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   ingressClassName: nginx
 
+  tls:
+    - hosts:
+        - www.eventbook.name.ng
+      secretName: eventbook-tls
+
   rules:
-    - http:
+    - host: www.eventbook.name.ng
+      http:
         paths:
           - path: /
             pathType: Prefix
