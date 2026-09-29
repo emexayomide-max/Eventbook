@@ -170,3 +170,75 @@ jobs:
 
           echo "frontend image:"
           echo "${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.FRONTEND_ECR_REPOSITORY }}:${{ github.sha }}"
+  deploy-to-eks:
+    name: Deploy to Amazon EKS
+    runs-on: ubuntu-latest
+
+    needs: push-to-ecr
+
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: arn:aws:iam::264627804121:role/EventBookGitHubActionsRole
+          aws-region: ${{ env.AWS_REGION }}
+          allowed-account-ids: "264627804121"
+
+      - name: Verify AWS identity
+        run: aws sts get-caller-identity
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig \
+            --name eventbook-eks \
+            --region ${{ env.AWS_REGION }}
+
+      - name: Verify Kubernetes access
+        run: |
+          kubectl auth can-i get deployments -n eventbook
+          kubectl auth can-i update deployments -n eventbook
+
+      - name: Deploy backend
+        run: |
+          kubectl set image deployment/backend \
+            backend=${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.BACKEND_ECR_REPOSITORY }}:${{ github.sha }} \
+            -n eventbook
+
+      - name: Deploy frontend
+        run: |
+          kubectl set image deployment/frontend \
+            frontend=${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.FRONTEND_ECR_REPOSITORY }}:${{ github.sha }} \
+            -n eventbook
+
+      - name: Wait for backend rollout
+        run: |
+          kubectl rollout status deployment/backend \
+            -n eventbook \
+            --timeout=5m
+
+      - name: Wait for frontend rollout
+        run: |
+          kubectl rollout status deployment/frontend \
+            -n eventbook \
+            --timeout=5m
+
+      - name: Verify deployed images
+        run: |
+          echo "Backend:"
+          kubectl get deployment backend -n eventbook \
+            -o jsonpath='{.spec.template.spec.containers[0].image}'
+          echo
+
+          echo "Frontend:"
+          kubectl get deployment frontend -n eventbook \
+            -o jsonpath='{.spec.template.spec.containers[0].image}'
+          echo
