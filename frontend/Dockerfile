@@ -1,3 +1,4 @@
+# Stage 1: build
 
 FROM node:24-alpine AS build
 
@@ -10,6 +11,7 @@ COPY . .
 
 RUN npm run build
 
+# Stage 2: Production
 
 FROM nginx:alpine AS production
 
