@@ -13,7 +13,8 @@ CREATE TABLE events (
     location VARCHAR(255) NOT NULL,
     event_date TIMESTAMP NOT NULL,
     capacity INTEGER NOT NULL CHECK (capacity > 0),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by INTEGER REFERENCES users(id)
 );
 
 CREATE TABLE bookings (

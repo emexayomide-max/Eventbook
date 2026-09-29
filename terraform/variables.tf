@@ -1,3 +1,4 @@
+
 variable "aws_region" {
   description = "AWS region where EventBook infrastructure will be deployed"
   type        = string
@@ -11,15 +12,39 @@ variable "vpc_cidr" {
 }
 
 variable "public_subnet_cidr" {
-  description = "CIDR block for the EventBook public subnet"
+  description = "CIDR block for the first public subnet"
   type        = string
   default     = "10.0.1.0/24"
 }
 
+variable "public_subnet_2_cidr" {
+  description = "CIDR block for the second public subnet"
+  type        = string
+  default     = "10.0.2.0/24"
+}
+
+variable "private_subnet_1_cidr" {
+  description = "CIDR block for the first private subnet"
+  type        = string
+  default     = "10.0.10.0/24"
+}
+
+variable "private_subnet_2_cidr" {
+  description = "CIDR block for the second private subnet"
+  type        = string
+  default     = "10.0.11.0/24"
+}
+
 variable "availability_zone" {
-  description = "Availability Zone for the public subnet"
+  description = "First Availability Zone"
   type        = string
   default     = "us-east-1a"
+}
+
+variable "availability_zone_2" {
+  description = "Second Availability Zone"
+  type        = string
+  default     = "us-east-1b"
 }
 
 variable "admin_ip" {
@@ -39,6 +64,6 @@ variable "instance_type" {
 }
 
 variable "key_name" {
-  description = "Existing AWS EC2 key pair name"
+  description = "Existing EC2 key pair name"
   type        = string
 }
