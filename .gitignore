@@ -28,3 +28,7 @@ coverage/
 *.tfstate
 *.tfstate.*
 terraform.tfvars
+
+# Kubernetes secrets
+k8s/backend/secret.yaml
+k8s/postgres/secret.yaml
