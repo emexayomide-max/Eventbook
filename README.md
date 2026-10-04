@@ -1094,7 +1094,6 @@ Amazon EKS
 
 
 
-
 # GitHub OIDC
 
 GitHub Actions uses OpenID Connect to authenticate with AWS.
