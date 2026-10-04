@@ -242,3 +242,5 @@ jobs:
           kubectl get deployment frontend -n eventbook \
             -o jsonpath='{.spec.template.spec.containers[0].image}'
           echo
+
+          
