@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: 264627804121.dkr.ecr.us-east-1.amazonaws.com/eventbook-backend:latest
+          image: eventbook-backend:latest
 
           ports:
             - containerPort: 3001

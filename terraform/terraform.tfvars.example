@@ -1,10 +1,36 @@
-aws_region         = "us-east-1"
-vpc_cidr           = "10.0.0.0/16"
-public_subnet_cidr = "10.0.1.0/24"
-availability_zone  = "us-east-1a"
+aws_region = "YOUR_AWS_REGION"
+
+vpc_cidr              = "YOUR_VPC_CIDR"
+public_subnet_cidr    = "YOUR_PUBLIC_SUBNET_CIDR"
+public_subnet_2_cidr  = "YOUR_PUBLIC_SUBNET_2_CIDR"
+private_subnet_1_cidr = "YOUR_PRIVATE_SUBNET_1_CIDR"
+private_subnet_2_cidr = "YOUR_PRIVATE_SUBNET_2_CIDR"
+
+availability_zone   = "YOUR_AVAILABILITY_ZONE"
+availability_zone_2 = "YOUR_SECOND_AVAILABILITY_ZONE"
 
 admin_ip      = "YOUR_PUBLIC_IP/32"
 ami_id        = "YOUR_AMI_ID"
-instance_type = "t3.micro"
+instance_type = "YOUR_INSTANCE_TYPE"
 key_name      = "YOUR_EC2_KEY_PAIR_NAME"
 
+project_name = "YOUR_PROJECT_NAME"
+environment  = "YOUR_ENVIRONMENT"
+
+eks_cluster_role_name = "YOUR_EKS_CLUSTER_ROLE_NAME"
+eks_node_role_name    = "YOUR_EKS_NODE_ROLE_NAME"
+eks_cluster_name      = "YOUR_EKS_CLUSTER_NAME"
+eks_version           = "YOUR_KUBERNETES_VERSION"
+
+eks_node_group_name = "YOUR_EKS_NODE_GROUP_NAME"
+eks_instance_types  = ["YOUR_EKS_INSTANCE_TYPE"]
+eks_capacity_type   = "YOUR_EKS_CAPACITY_TYPE"
+
+eks_desired_size = YOUR_DESIRED_NODE_COUNT
+eks_min_size     = YOUR_MIN_NODE_COUNT
+eks_max_size     = YOUR_MAX_NODE_COUNT
+
+eks_max_unavailable = YOUR_MAX_UNAVAILABLE
+
+eks_endpoint_private_access = YOUR_PRIVATE_ENDPOINT_SETTING
+eks_endpoint_public_access  = YOUR_PUBLIC_ENDPOINT_SETTING

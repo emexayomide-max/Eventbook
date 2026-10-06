@@ -1,4 +1,3 @@
-
 variable "aws_region" {
   description = "AWS region where EventBook infrastructure will be deployed"
   type        = string
@@ -66,4 +65,94 @@ variable "instance_type" {
 variable "key_name" {
   description = "Existing EC2 key pair name"
   type        = string
+}
+
+variable "project_name" {
+  description = "Project name used for AWS resource naming and tagging"
+  type        = string
+  default     = "EventBook"
+}
+
+variable "environment" {
+  description = "Deployment environment"
+  type        = string
+  default     = "development"
+}
+
+variable "eks_cluster_role_name" {
+  description = "IAM role name for the EKS control plane"
+  type        = string
+  default     = "EventBook-EKS-Cluster-Role"
+}
+
+variable "eks_node_role_name" {
+  description = "IAM role name for EKS worker nodes"
+  type        = string
+  default     = "EventBook-EKS-Node-Role"
+}
+
+variable "eks_cluster_name" {
+  description = "Name of the EventBook EKS cluster"
+  type        = string
+  default     = "eventbook-eks"
+}
+
+variable "eks_version" {
+  description = "Kubernetes version for the EKS cluster"
+  type        = string
+  default     = "1.33"
+}
+
+variable "eks_node_group_name" {
+  description = "Name of the EKS managed node group"
+  type        = string
+  default     = "eventbook-node-group"
+}
+
+variable "eks_instance_types" {
+  description = "EC2 instance types used by the EKS node group"
+  type        = list(string)
+  default     = ["t3.small"]
+}
+
+variable "eks_capacity_type" {
+  description = "EKS node group capacity type"
+  type        = string
+  default     = "ON_DEMAND"
+}
+
+variable "eks_desired_size" {
+  description = "Desired number of EKS worker nodes"
+  type        = number
+  default     = 2
+}
+
+variable "eks_min_size" {
+  description = "Minimum number of EKS worker nodes"
+  type        = number
+  default     = 2
+}
+
+variable "eks_max_size" {
+  description = "Maximum number of EKS worker nodes"
+  type        = number
+  default     = 3
+}
+
+variable "eks_max_unavailable" {
+  description = "Maximum number of unavailable nodes during an update"
+  type        = number
+  default     = 1
+}
+
+variable "eks_endpoint_private_access" {
+  description = "Enable private access to the EKS API endpoint"
+  type        = bool
+  default     = true
+}
+
+variable "eks_endpoint_public_access" {
+  description = "Enable public access to the EKS API endpoint"
+  type        = bool
+  default     = true
 }
